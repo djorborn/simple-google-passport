@@ -70,21 +70,7 @@ passport.deserializeUser(function (obj, done) {
   done(null, obj)
 })
 
-// Auth Required Middleware
-function authRequired (req, res, next) {
-  if (!req.user) {
-    req.session.oauth2return = req.originalUrl
-    return res.redirect('/auth/login')
-  }
-  next()
-}
-// Middleware that Exposes User Profile
-function addTemplateVariables (req, res, next) {
-  res.locals.profile = req.user
-  res.locals.login = `/auth/login?return=${encodeURIComponent(req.originalUrl)}`
-  res.locals.logout = `/auth/logout?return=${encodeURIComponent(req.originalUrl)}`
-  next()
-}
+
 // END Middleware
 
 // End Passport Config ---------------- End Passport Config ---------
