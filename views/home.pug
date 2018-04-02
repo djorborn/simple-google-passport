@@ -1,0 +1,10 @@
+extends layout
+block home
+  h1=title
+  h2 Welcome #{displayName}
+  hr
+  p: img(src=image)
+  p You are now logged in!
+  p The cookie is good for 24 hours unless you logout
+  hr
+  a(href="/logout"): button Logout
