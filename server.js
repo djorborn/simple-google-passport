@@ -55,7 +55,13 @@ function extractProfile (profile) {
   return {
     id: profile.id,
     displayName: profile.displayName,
-    image: imageUrl
+    image: imageUrl,
+    name: {
+      first: profile.name.givenName,
+      last: profile.name.familyName,
+      user: profile._json.tagline
+    },
+    email: profile.emails
   }
 }
 app.use(
@@ -94,7 +100,7 @@ function addTemplateVariables (req, res, next) {
 app.get(
   '/auth/login',
   (req, res, next) => {
-    if (req.query.return) { 
+    if (req.query.return) {
       res.session.oauth2return = req.query.return
     }
     next()
@@ -102,7 +108,7 @@ app.get(
   passport.authenticate('google', {scope: ['email', 'profile']})
 )
 app.get(
-  '/auth/google/callback', 
+  '/auth/google/callback',
   passport.authenticate('google'),
   (req, res) => {
     const redirect = req.session.oauth2return || '/'
@@ -111,11 +117,16 @@ app.get(
 })
 // Google Auth Route
 app.get('/', (req, res) => {
-  if (!req.user) res.redirect('/login')
-  res.render('home', {
-    image: req.user.image,
-    displayName: req.user.displayName
-  })
+  if (!req.user) {
+    res.redirect('/login')
+  } else {
+    res.render('home', {
+      image: req.user.image,
+      displayName: req.user.displayName,
+      user: JSON.stringify(req.user)
+    })
+  }
+
 })
 app.get('/login', (req, res) => {
   res.render('form', {
